@@ -1,0 +1,24 @@
+# BioShield IoT — Python Dependencies
+# Install: pip install -r requirements.txt
+
+# Web framework
+fastapi==0.115.0
+uvicorn[standard]==0.30.0
+python-multipart==0.0.9
+
+# Cryptography (AES-256-GCM + PBKDF2 + HKDF + Fernet)
+cryptography==43.0.1
+
+# Image processing
+Pillow==10.4.0
+numpy==1.26.4
+
+# Scientific (for EER calculation)
+scipy==1.14.0
+
+# Pydantic
+pydantic==2.8.2
+
+# NOTE: SourceAFIS is called via Java subprocess — no JPype needed.
+# Requirements: Java 11+ installed, sourceafis_java/target/ JAR built.
+# Build JAR: cd sourceafis_java && mvn clean package -q
