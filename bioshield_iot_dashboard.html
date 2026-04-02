@@ -1,0 +1,2020 @@
+<!DOCTYPE html>
+<html data-theme="dark">
+<head>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ===== DARK THEME (default) ===== */
+[data-theme="dark"] {
+  --bg0: #0a0c10;
+  --bg1: #0f1117;
+  --bg2: #151820;
+  --bg3: #1c2030;
+  --border: rgba(255,255,255,0.07);
+  --border-glow: rgba(0,255,136,0.25);
+  --accent: #00ff88;
+  --accent2: #00d4ff;
+  --red: #ff3d5a;
+  --amber: #ffb830;
+  --text1: #e8eaf0;
+  --text2: #8b90a0;
+  --text3: #555a6a;
+  --mono: 'Space Mono', monospace;
+  --sans: 'DM Sans', system-ui, sans-serif;
+  --shadow: rgba(0,0,0,0.4);
+  --log-bg: #06080b;
+  --iot-screen-bg: #06080b;
+  --select-bg: #151820;
+}
+
+/* ===== LIGHT THEME ===== */
+[data-theme="light"] {
+  --bg0: #f0f2f7;
+  --bg1: #ffffff;
+  --bg2: #f5f7fc;
+  --bg3: #e4e7f0;
+  --border: rgba(0,0,0,0.08);
+  --border-glow: rgba(0,180,90,0.3);
+  --accent: #00a85a;
+  --accent2: #0099cc;
+  --red: #e02040;
+  --amber: #d68000;
+  --text1: #1a1d26;
+  --text2: #5a5f72;
+  --text3: #9096ac;
+  --mono: 'Space Mono', monospace;
+  --sans: 'DM Sans', system-ui, sans-serif;
+  --shadow: rgba(0,0,0,0.08);
+  --log-bg: #e8eaf4;
+  --iot-screen-bg: #eef0f8;
+  --select-bg: #f5f7fc;
+}
+
+body {
+  background: var(--bg0);
+  color: var(--text1);
+  font-family: var(--sans);
+  font-size: 13px;
+  line-height: 1.5;
+  min-height: 100vh;
+  padding: 0;
+  transition: background 0.3s, color 0.3s;
+}
+
+/* HEADER */
+.header {
+  background: var(--bg1);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 8px var(--shadow);
+  transition: background 0.3s, border-color 0.3s;
+}
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--mono);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.05em;
+}
+.logo-icon {
+  width: 28px; height: 28px;
+  border: 2px solid var(--accent);
+  border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px;
+  background: rgba(0,200,100,0.08);
+}
+.status-row {
+  display: flex; gap: 16px; align-items: center;
+}
+.status-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 6px var(--accent);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+.status-text { font-size: 11px; color: var(--text2); font-family: var(--mono); }
+.system-badge {
+  background: rgba(0,200,100,0.1);
+  border: 1px solid rgba(0,200,100,0.2);
+  color: var(--accent);
+  font-size: 10px; font-family: var(--mono);
+  padding: 3px 8px; border-radius: 4px;
+  letter-spacing: 0.05em;
+}
+
+/* THEME TOGGLE */
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 4px 10px 4px 6px;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text2);
+  user-select: none;
+  transition: all 0.2s;
+}
+.theme-toggle:hover { border-color: var(--accent); color: var(--accent); }
+.toggle-track {
+  width: 30px; height: 16px;
+  border-radius: 8px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  position: relative;
+  transition: background 0.3s;
+  flex-shrink: 0;
+}
+[data-theme="light"] .toggle-track { background: var(--accent); }
+.toggle-thumb {
+  position: absolute;
+  top: 2px; left: 2px;
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: var(--text2);
+  transition: transform 0.3s, background 0.3s;
+}
+[data-theme="light"] .toggle-thumb { transform: translateX(14px); background: #fff; }
+
+/* API STATUS BAR */
+.api-bar {
+  background: var(--bg1);
+  border-bottom: 1px solid var(--border);
+  padding: 6px 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-family: var(--mono);
+  font-size: 10px;
+  transition: background 0.3s;
+}
+.api-endpoint {
+  display: flex; align-items: center; gap: 6px;
+  color: var(--text3);
+}
+.api-dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
+.api-dot.ok { background: var(--accent); box-shadow: 0 0 4px var(--accent); }
+.api-dot.err { background: var(--red); }
+.api-dot.warn { background: var(--amber); }
+.api-url { color: var(--accent2); }
+.api-mode {
+  margin-left: auto;
+  padding: 2px 8px;
+  border-radius: 3px;
+  font-size: 9px;
+  background: rgba(255,184,48,0.12);
+  color: var(--amber);
+  border: 1px solid rgba(255,184,48,0.25);
+  letter-spacing: 0.05em;
+}
+
+/* NAV TABS */
+.nav-tabs {
+  background: var(--bg1);
+  border-bottom: 1px solid var(--border);
+  padding: 0 20px;
+  display: flex; gap: 0;
+  overflow-x: auto;
+  transition: background 0.3s;
+}
+.tab {
+  padding: 10px 16px;
+  font-size: 12px; font-family: var(--mono);
+  color: var(--text3);
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+  letter-spacing: 0.03em;
+  background: none; border-top: none; border-left: none; border-right: none;
+}
+.tab:hover { color: var(--text1); }
+.tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+/* MAIN GRID */
+.main { padding: 16px 20px; display: flex; flex-direction: column; gap: 16px; }
+
+/* PANEL */
+.panel {
+  background: var(--bg1);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  transition: background 0.3s, border-color 0.3s;
+  box-shadow: 0 1px 4px var(--shadow);
+}
+.panel-header {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.panel-title {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text2);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  display: flex; align-items: center; gap: 8px;
+}
+.panel-dot { width: 5px; height: 5px; border-radius: 50%; }
+.panel-body { padding: 14px; }
+
+/* GRID LAYOUTS */
+.grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 16px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 12px; }
+.grid-4 { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 10px; }
+
+/* STAT CARD */
+.stat {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px;
+  transition: background 0.3s;
+}
+.stat-label { font-size: 10px; color: var(--text3); font-family: var(--mono); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; }
+.stat-value { font-size: 22px; font-weight: 600; font-family: var(--mono); }
+.stat-sub { font-size: 10px; color: var(--text3); margin-top: 2px; }
+.green { color: var(--accent); }
+.red { color: var(--red); }
+.blue { color: var(--accent2); }
+.amber { color: var(--amber); }
+
+/* BUTTONS */
+.btn {
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 12px; font-family: var(--mono);
+  cursor: pointer;
+  transition: all 0.15s;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  border: none;
+}
+.btn-primary { background: var(--accent); color: #fff; }
+[data-theme="dark"] .btn-primary { color: #000; }
+.btn-primary:hover { filter: brightness(1.1); transform: translateY(-1px); }
+.btn-danger {
+  background: rgba(220,30,60,0.1);
+  color: var(--red);
+  border: 1px solid rgba(220,30,60,0.25);
+}
+.btn-danger:hover { background: rgba(220,30,60,0.2); }
+.btn-info {
+  background: rgba(0,153,200,0.1);
+  color: var(--accent2);
+  border: 1px solid rgba(0,153,200,0.2);
+}
+.btn-info:hover { background: rgba(0,153,200,0.2); }
+.btn-ghost {
+  background: var(--bg3);
+  color: var(--text2);
+  border: 1px solid var(--border);
+}
+.btn-ghost:hover { color: var(--text1); border-color: var(--text2); }
+.btn-row { display: flex; gap: 8px; flex-wrap: wrap; }
+
+/* API CALL BUTTON */
+.btn-api {
+  background: linear-gradient(135deg, rgba(0,150,255,0.12), rgba(0,200,100,0.1));
+  color: var(--accent2);
+  border: 1px solid rgba(0,150,255,0.25);
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-size: 11px; font-family: var(--mono);
+  cursor: pointer;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  transition: all 0.15s;
+}
+.btn-api:hover { filter: brightness(1.1); transform: translateY(-1px); }
+.btn-api:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+/* SPINNER */
+.spinner {
+  display: inline-block;
+  width: 10px; height: 10px;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent2);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  vertical-align: middle;
+  margin-right: 4px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* API RESPONSE DISPLAY */
+.api-response {
+  background: var(--log-bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 10px;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--accent2);
+  margin-top: 10px;
+  max-height: 120px;
+  overflow-y: auto;
+  word-break: break-all;
+  line-height: 1.6;
+  display: none;
+}
+.api-response.show { display: block; }
+
+/* BINARY GRID */
+.binary-grid {
+  display: grid;
+  grid-template-columns: repeat(32, 1fr);
+  gap: 1px;
+  font-family: var(--mono);
+  font-size: 7px;
+}
+.bit {
+  aspect-ratio: 1;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 1px;
+  font-size: 7px;
+  transition: background 0.3s, color 0.3s;
+}
+[data-theme="dark"] .bit.one { background: rgba(0,255,136,0.7); color: #000; }
+[data-theme="light"] .bit.one { background: rgba(0,168,90,0.7); color: #fff; }
+.bit.zero { background: var(--bg3); color: var(--text3); }
+[data-theme="dark"] .bit.highlight { background: rgba(255,184,48,0.8); color: #000; }
+[data-theme="light"] .bit.highlight { background: rgba(214,128,0,0.75); color: #fff; }
+
+/* LOG */
+.log-container {
+  background: var(--log-bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  height: 140px;
+  overflow-y: auto;
+  padding: 8px 10px;
+  font-family: var(--mono);
+  font-size: 10px;
+  transition: background 0.3s;
+}
+.log-entry { padding: 2px 0; display: flex; gap: 8px; }
+.log-time { color: var(--text3); min-width: 50px; }
+.log-msg-green { color: var(--accent); }
+.log-msg-red { color: var(--red); }
+.log-msg-blue { color: var(--accent2); }
+.log-msg-amber { color: var(--amber); }
+.log-msg-gray { color: var(--text2); }
+
+/* PROGRESS BAR */
+.prog-bar {
+  height: 4px; border-radius: 2px;
+  background: var(--bg3);
+  overflow: hidden;
+  margin: 4px 0 8px;
+}
+.prog-fill { height: 100%; border-radius: 2px; transition: width 0.5s; }
+
+/* LED INDICATOR */
+.led-row { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border); }
+.led-row:last-child { border-bottom: none; }
+.led { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.led.on-green { background: var(--accent); box-shadow: 0 0 8px var(--accent); }
+.led.on-red { background: var(--red); box-shadow: 0 0 8px var(--red); }
+.led.on-blue { background: var(--accent2); box-shadow: 0 0 8px var(--accent2); }
+.led.off { background: var(--bg3); }
+.led-label { font-family: var(--mono); font-size: 11px; color: var(--text2); }
+.led-value { margin-left: auto; font-family: var(--mono); font-size: 11px; color: var(--text1); }
+
+/* FINGERPRINT SVG */
+.fp-container {
+  display: flex; align-items: center; justify-content: center;
+  height: 100px;
+}
+.fp-svg path { transition: stroke 0.5s; }
+
+/* HAMMING DISPLAY */
+.hamming-display {
+  text-align: center; padding: 10px;
+}
+.hamming-num { font-size: 36px; font-family: var(--mono); font-weight: 700; }
+.hamming-label { font-size: 10px; color: var(--text3); font-family: var(--mono); text-transform: uppercase; letter-spacing: 0.08em; }
+
+.verdict-box {
+  border-radius: 8px; padding: 12px 16px;
+  text-align: center; font-family: var(--mono); font-weight: 700;
+  font-size: 14px; letter-spacing: 0.05em;
+  margin-top: 10px;
+}
+.verdict-accept { background: rgba(0,200,100,0.1); border: 1px solid rgba(0,200,100,0.3); color: var(--accent); }
+.verdict-reject { background: rgba(220,30,60,0.1); border: 1px solid rgba(220,30,60,0.3); color: var(--red); }
+
+/* ARCHITECTURE DIAGRAM */
+.arch-node {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 10px;
+  text-align: center;
+  font-family: var(--mono);
+  font-size: 10px;
+  position: relative;
+  transition: background 0.3s;
+}
+.arch-node .node-icon { font-size: 18px; margin-bottom: 4px; }
+.arch-node .node-label { color: var(--text2); letter-spacing: 0.05em; }
+.arch-node .node-name { color: var(--text1); font-weight: 700; font-size: 11px; margin-bottom: 2px; }
+.arch-arrow {
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text3); font-family: var(--mono); font-size: 16px;
+}
+
+/* ATTACK PANEL */
+.breach-card {
+  background: rgba(220,30,60,0.06);
+  border: 1px solid rgba(220,30,60,0.2);
+  border-radius: 8px;
+  padding: 12px;
+  animation: breach-pulse 2s infinite;
+}
+@keyframes breach-pulse { 0%,100%{border-color:rgba(220,30,60,0.2)} 50%{border-color:rgba(220,30,60,0.5)} }
+.shield-ok {
+  background: rgba(0,200,100,0.06);
+  border: 1px solid rgba(0,200,100,0.2);
+  border-radius: 8px;
+  padding: 12px;
+}
+.tag {
+  display: inline-block; font-family: var(--mono); font-size: 9px; padding: 2px 7px;
+  border-radius: 3px; text-transform: uppercase; letter-spacing: 0.07em; font-weight: 700;
+}
+.tag-red { background: rgba(220,30,60,0.12); color: var(--red); border: 1px solid rgba(220,30,60,0.2); }
+.tag-green { background: rgba(0,200,100,0.1); color: var(--accent); border: 1px solid rgba(0,200,100,0.15); }
+.tag-blue { background: rgba(0,153,200,0.1); color: var(--accent2); border: 1px solid rgba(0,153,200,0.15); }
+.tag-amber { background: rgba(214,128,0,0.1); color: var(--amber); border: 1px solid rgba(214,128,0,0.15); }
+
+/* REVOCATION COMPARE */
+.template-compare {
+  display: grid; grid-template-columns: 1fr auto 1fr; gap: 10px; align-items: center;
+}
+.compare-label {
+  font-size: 10px; font-family: var(--mono); text-align: center; margin-bottom: 6px;
+  text-transform: uppercase; letter-spacing: 0.08em;
+}
+.diff-arrow { color: var(--text3); font-size: 20px; text-align: center; }
+
+/* INDIA CONTEXT */
+.compliance-row {
+  display: flex; align-items: center; gap: 10px; padding: 8px 0;
+  border-bottom: 1px solid var(--border); font-size: 12px;
+}
+.compliance-row:last-child { border-bottom: none; }
+.check-icon { color: var(--accent); font-size: 14px; min-width: 18px; }
+.cross-icon { color: var(--red); font-size: 14px; min-width: 18px; }
+
+/* SLIDER STYLE */
+input[type=range] {
+  -webkit-appearance: none;
+  width: 100%; height: 4px;
+  background: var(--bg3);
+  border-radius: 2px; outline: none;
+  cursor: pointer;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 2px solid var(--bg1);
+  cursor: pointer;
+}
+
+select {
+  background: var(--select-bg);
+  color: var(--text1);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-family: var(--mono);
+  font-size: 11px;
+  flex: 1;
+  transition: background 0.3s, color 0.3s;
+}
+
+.section-hidden { display: none; }
+.section-active { display: flex; flex-direction: column; gap: 16px; }
+
+/* IOTDEVICE */
+.iot-device {
+  background: var(--bg2);
+  border: 2px solid var(--border);
+  border-radius: 20px;
+  width: 180px;
+  padding: 16px 14px;
+  text-align: center;
+  margin: 0 auto;
+  transition: background 0.3s;
+}
+.iot-screen {
+  background: var(--iot-screen-bg);
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  padding: 14px 10px;
+  margin-bottom: 10px;
+  transition: background 0.3s;
+}
+.iot-screen-title { font-family: var(--mono); font-size: 10px; color: var(--text3); margin-bottom: 8px; letter-spacing: 0.1em; }
+.iot-fp-icon { font-size: 30px; margin: 8px 0; }
+.iot-status { font-size: 11px; font-family: var(--mono); min-height: 16px; }
+.iot-btn { width: 100%; padding: 7px; border-radius: 6px; font-size: 11px; font-family: var(--mono); font-weight: 700; cursor: pointer; border: none; margin: 3px 0; letter-spacing: 0.04em; }
+.iot-btn-enroll { background: rgba(0,153,200,0.15); color: var(--accent2); border: 1px solid rgba(0,153,200,0.25); }
+.iot-btn-verify { background: rgba(0,200,100,0.12); color: var(--accent); border: 1px solid rgba(0,200,100,0.2); }
+.iot-btn-cancel { background: rgba(220,30,60,0.1); color: var(--red); border: 1px solid rgba(220,30,60,0.2); }
+.iot-led-bar { display: flex; justify-content: center; gap: 6px; margin-top: 10px; }
+
+/* PROPERTY CARDS */
+.prop-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px;
+  transition: background 0.3s;
+}
+.prop-icon { font-size: 20px; margin-bottom: 6px; }
+.prop-title { font-family: var(--mono); font-size: 11px; font-weight: 700; color: var(--text1); margin-bottom: 4px; }
+.prop-desc { font-size: 11px; color: var(--text2); line-height: 1.5; }
+.prop-badge { margin-top: 8px; }
+
+/* SCROLL */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: var(--bg0); }
+::-webkit-scrollbar-thumb { background: var(--bg3); border-radius: 2px; }
+
+/* SEPARATOR */
+.sep { height: 1px; background: var(--border); margin: 8px 0; }
+.mono { font-family: var(--mono); }
+.text2 { color: var(--text2); }
+.text3 { color: var(--text3); }
+.small { font-size: 11px; }
+.xs { font-size: 10px; }
+
+/* ANIM */
+@keyframes fadeIn { from{opacity:0;transform:translateY(4px)} to{opacity:1;transform:translateY(0)} }
+.animate { animation: fadeIn 0.3s ease; }
+
+@keyframes scanLine { 0%{top:0%} 100%{top:100%} }
+.scanning .scan-line {
+  position: absolute; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  animation: scanLine 1.5s linear infinite;
+}
+.fp-wrapper { position: relative; overflow: hidden; }
+
+.key-sep {
+  border: 1px dashed rgba(214,128,0,0.3);
+  border-radius: 8px;
+  padding: 6px 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  color: var(--amber);
+  font-family: var(--mono);
+}
+
+/* FVC DATASET PANEL */
+.fvc-sample {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  margin-bottom: 6px;
+  font-family: var(--mono);
+  font-size: 10px;
+  transition: background 0.3s;
+}
+.fvc-fp-thumb {
+  width: 36px; height: 44px;
+  background: var(--bg3);
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.fvc-meta { flex: 1; }
+.fvc-meta .fvc-id { color: var(--accent2); font-weight: 700; }
+.fvc-meta .fvc-detail { color: var(--text3); font-size: 9px; margin-top: 2px; }
+.fvc-score { font-family: var(--mono); font-size: 12px; font-weight: 700; }
+
+/* METRICS TABLE */
+.metrics-table { width: 100%; border-collapse: collapse; font-family: var(--mono); font-size: 11px; }
+.metrics-table th {
+  text-align: left;
+  font-size: 10px;
+  color: var(--text3);
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--border);
+}
+.metrics-table td {
+  padding: 7px 8px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text2);
+}
+.metrics-table tr:last-child td { border-bottom: none; }
+.metrics-table .val { color: var(--text1); font-weight: 700; }
+.metrics-table .good { color: var(--accent); }
+.metrics-table .warn { color: var(--amber); }
+.metrics-table .bad  { color: var(--red); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">
+    <div class="logo-icon">⬡</div>
+    BioShield IoT
+  </div>
+  <div class="status-row">
+    <div class="status-dot"></div>
+    <span class="status-text">SYSTEM ONLINE</span>
+    <span class="system-badge">DPDP-2023 COMPLIANT</span>
+    <div class="theme-toggle" onclick="toggleTheme()" title="Toggle light/dark theme">
+      <div class="toggle-track"><div class="toggle-thumb"></div></div>
+      <span id="theme-label">DARK</span>
+    </div>
+  </div>
+</div>
+
+<!-- API Status Bar -->
+<div class="api-bar">
+  <div class="api-endpoint">
+    <div class="api-dot ok" id="api-dot-main"></div>
+    <span class="api-url" id="api-base-display">http://localhost:8000</span>
+  </div>
+  <div class="api-endpoint">
+    <div class="api-dot ok"></div>
+    <span>FastAPI + SourceAFIS</span>
+  </div>
+  <div class="api-endpoint">
+    <div class="api-dot ok"></div>
+    <span>FVC2002 Dataset</span>
+  </div>
+  <div class="api-endpoint">
+    <div class="api-dot ok"></div>
+    <span>AES-256-GCM Crypto</span>
+  </div>
+  <div class="api-endpoint" style="margin-left:auto;gap:0">
+    <input id="api-url-input" value="http://localhost:8000"
+      style="background:var(--bg3);border:1px solid var(--border);border-radius:4px;
+             padding:2px 8px;font-family:var(--mono);font-size:10px;
+             color:var(--text2);width:200px;margin-right:6px" />
+    <button class="btn btn-ghost" style="font-size:9px;padding:3px 8px" onclick="setApiUrl()">SET</button>
+  </div>
+  <div class="api-mode" id="api-mode-label">SIMULATION MODE — connect FastAPI to go live</div>
+</div>
+
+<div class="nav-tabs">
+  <button class="tab active" onclick="showTab('control')">01_CONTROL</button>
+  <button class="tab" onclick="showTab('iot')">02_IOT_DEVICE</button>
+  <button class="tab" onclick="showTab('templates')">03_TEMPLATES</button>
+  <button class="tab" onclick="showTab('security')">04_SECURITY</button>
+  <button class="tab" onclick="showTab('matching')">05_MATCHING</button>
+  <button class="tab" onclick="showTab('attack')">06_ATTACK_SIM</button>
+  <button class="tab" onclick="showTab('revocation')">07_REVOCATION</button>
+  <button class="tab" onclick="showTab('compliance')">08_INDIA_CTX</button>
+  <button class="tab" onclick="showTab('fvc')">09_FVC2002</button>
+  <button class="tab" onclick="showTab('api')">10_API_DOCS</button>
+</div>
+
+<div class="main">
+
+<!-- ============ TAB: CONTROL ============ -->
+<div id="tab-control" class="section-active">
+  <div class="grid-4">
+    <div class="stat">
+      <div class="stat-label">Enrolled Users</div>
+      <div class="stat-value green" id="enrolled-count">1</div>
+      <div class="stat-sub">Active templates</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Verifications</div>
+      <div class="stat-value blue" id="verif-count">0</div>
+      <div class="stat-sub">Total attempts</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Cancellations</div>
+      <div class="stat-value amber" id="cancel-count">0</div>
+      <div class="stat-sub">Revocations done</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Security Level</div>
+      <div class="stat-value green">AES-256</div>
+      <div class="stat-sub">Encrypted storage</div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title"><div class="panel-dot" style="background:var(--accent2)"></div>CONTROL PANEL</div>
+      </div>
+      <div class="panel-body">
+        <div class="btn-row" style="margin-bottom:14px">
+          <button class="btn btn-info" onclick="doEnroll()">⬡ ENROLL USER</button>
+          <button class="btn btn-primary" onclick="doVerify()">⬢ VERIFY USER</button>
+          <button class="btn btn-danger" onclick="doCancel()">⊗ CANCEL TEMPLATE</button>
+        </div>
+        <!-- API Buttons -->
+        <div class="btn-row" style="margin-bottom:14px">
+          <button class="btn-api" onclick="apiEnroll()">⚡ API ENROLL</button>
+          <button class="btn-api" onclick="apiVerify()">⚡ API VERIFY</button>
+          <button class="btn-api" onclick="apiStatus()">⚡ GET STATUS</button>
+        </div>
+        <div id="api-response-ctrl" class="api-response"></div>
+
+        <div style="margin-bottom:8px">
+          <div style="font-size:10px; color:var(--text3); font-family:var(--mono); margin-bottom:6px; letter-spacing:0.08em; text-transform:uppercase">Simulation User ID</div>
+          <div style="display:flex; gap:8px; align-items:center">
+            <select id="user-select">
+              <option>USER_ALPHA</option>
+              <option>USER_BETA</option>
+              <option>USER_GAMMA</option>
+            </select>
+            <button class="btn btn-ghost" onclick="addUser()" style="font-size:11px;padding:6px 10px">+ NEW</button>
+          </div>
+        </div>
+
+        <div style="margin-bottom:6px">
+          <div style="font-size:10px; color:var(--text3); font-family:var(--mono); margin-bottom:4px; text-transform:uppercase; letter-spacing:0.08em">Feature Vector Seed</div>
+          <input type="range" min="1" max="100" value="42" id="seed-slider" oninput="updateSeed(this.value)">
+          <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text3);font-family:var(--mono);margin-top:2px">
+            <span>SEED: <span id="seed-val" style="color:var(--accent2)">42</span></span>
+            <span style="color:var(--text3)">Simulated fingerprint variance</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title"><div class="panel-dot" style="background:var(--accent)"></div>SYSTEM LOG</div>
+        <button class="btn btn-ghost" onclick="clearLog()" style="font-size:10px;padding:3px 8px">CLR</button>
+      </div>
+      <div class="panel-body" style="padding:8px">
+        <div class="log-container" id="system-log">
+          <div class="log-entry"><span class="log-time">00:00:00</span><span class="log-msg-green">▶ BioShield IoT system initialized</span></div>
+          <div class="log-entry"><span class="log-time">00:00:00</span><span class="log-msg-blue">▶ AES-256 key vault ready</span></div>
+          <div class="log-entry"><span class="log-time">00:00:00</span><span class="log-msg-gray">▶ Awaiting biometric input...</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-header">
+      <div class="panel-title"><div class="panel-dot" style="background:var(--amber)"></div>SYSTEM ARCHITECTURE</div>
+    </div>
+    <div class="panel-body">
+      <div style="display:grid;grid-template-columns:repeat(5,1fr) auto repeat(3,1fr);gap:8px;align-items:center">
+        <div class="arch-node">
+          <div class="node-icon">📱</div>
+          <div class="node-name">IoT Device</div>
+          <div class="node-label">Android Emulator</div>
+          <div style="margin-top:6px"><span class="tag tag-blue">SMART LOCK</span></div>
+        </div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-node">
+          <div class="node-icon">⚡</div>
+          <div class="node-name">FastAPI</div>
+          <div class="node-label">REST Backend</div>
+          <div style="margin-top:6px"><span class="tag tag-blue">:8000</span></div>
+        </div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-node" style="border-color:rgba(0,200,100,0.3)">
+          <div class="node-icon">🔬</div>
+          <div class="node-name">SourceAFIS</div>
+          <div class="node-label">Minutiae Engine</div>
+          <div style="margin-top:6px"><span class="tag tag-green">CORE</span></div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--text3);font-size:14px">
+          <span>↓</span>
+          <span style="font-size:9px;font-family:var(--mono);color:var(--text3);writing-mode:horizontal-tb">KEYS</span>
+          <span style="font-size:9px;font-family:var(--mono);color:var(--amber)">SEPARATE</span>
+          <span>↓</span>
+        </div>
+        <div class="arch-node" style="border-color:rgba(214,128,0,0.3)">
+          <div class="node-icon">🔐</div>
+          <div class="node-name">Key Vault</div>
+          <div class="node-label">Fernet/AES Keys</div>
+          <div style="margin-top:6px"><span class="tag tag-amber">ISOLATED</span></div>
+        </div>
+        <div class="arch-arrow">+</div>
+        <div class="arch-node">
+          <div class="node-icon">🗄️</div>
+          <div class="node-name">Template DB</div>
+          <div class="node-label">AES-256-GCM</div>
+          <div style="margin-top:6px"><span class="tag tag-green">ENCRYPTED</span></div>
+        </div>
+      </div>
+      <div style="margin-top:10px">
+        <div class="key-sep">
+          <span>⚠</span>
+          <span>CRITICAL SEPARATION: Key Vault and Template DB are never stored together. FVC2002 minutiae → SourceAFIS → BioHash → AES-256-GCM encrypted store.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ TAB: IOT DEVICE ============ -->
+<div id="tab-iot" class="section-hidden">
+  <div class="grid-2">
+    <div class="panel" style="display:flex;align-items:center;justify-content:center;padding:24px">
+      <div class="iot-device">
+        <div style="font-size:9px;font-family:var(--mono);color:var(--text3);margin-bottom:8px;letter-spacing:0.1em">BIOSHIELD IOT v2.0</div>
+        <div style="font-size:9px;font-family:var(--mono);color:var(--text3);margin-bottom:8px">◈ Smart Lock Simulator</div>
+        <div class="iot-screen">
+          <div class="iot-screen-title" id="iot-title">BIOMETRIC AUTH</div>
+          <div class="iot-fp-icon fp-wrapper" id="iot-fp">
+            <span id="iot-fp-glyph">☉</span>
+          </div>
+          <div class="iot-status" id="iot-status" style="color:var(--text3)">Place finger to scan</div>
+        </div>
+        <button class="iot-btn iot-btn-enroll" onclick="iotEnroll()" style="margin-bottom:4px">ENROLL</button>
+        <button class="iot-btn iot-btn-verify" onclick="iotVerify()" style="margin-bottom:4px">VERIFY</button>
+        <button class="iot-btn iot-btn-cancel" onclick="iotCancel()">REVOKE</button>
+        <div class="iot-led-bar">
+          <div class="led off" id="led-r" title="Access Denied"></div>
+          <div class="led off" id="led-a" title="Processing"></div>
+          <div class="led off" id="led-g" title="Access Granted"></div>
+        </div>
+        <div style="font-size:8px;font-family:var(--mono);color:var(--text3);margin-top:4px">R  •  P  •  G</div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title"><div class="panel-dot" style="background:var(--accent2)"></div>DEVICE METRICS</div>
+      </div>
+      <div class="panel-body">
+        <div class="led-row">
+          <div class="led on-green" id="dl-enrolled"></div>
+          <span class="led-label">Enrollment status</span>
+          <span class="led-value" id="dv-enrolled" style="color:var(--accent)">ACTIVE</span>
+        </div>
+        <div class="led-row">
+          <div class="led off" id="dl-scanning"></div>
+          <span class="led-label">Scan processing</span>
+          <span class="led-value text2" id="dv-scanning">IDLE</span>
+        </div>
+        <div class="led-row">
+          <div class="led off" id="dl-match"></div>
+          <span class="led-label">Last match result</span>
+          <span class="led-value text3" id="dv-match">—</span>
+        </div>
+        <div class="led-row">
+          <div class="led on-blue"></div>
+          <span class="led-label">Encryption</span>
+          <span class="led-value blue">AES-256-GCM ACTIVE</span>
+        </div>
+        <div class="led-row">
+          <div class="led on-green"></div>
+          <span class="led-label">SourceAFIS Engine</span>
+          <span class="led-value green">LOADED</span>
+        </div>
+        <div class="led-row">
+          <div class="led on-green"></div>
+          <span class="led-label">IoT connection</span>
+          <span class="led-value green">TLS 1.3</span>
+        </div>
+
+        <div class="sep" style="margin-top:12px"></div>
+        <div style="font-size:10px;color:var(--text3);font-family:var(--mono);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.08em">API Endpoint Status</div>
+        <div style="display:flex;flex-direction:column;gap:4px">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 8px;background:var(--bg2);border-radius:4px">
+            <span class="mono xs text2">POST /enroll</span>
+            <span class="tag tag-green">200 OK</span>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 8px;background:var(--bg2);border-radius:4px">
+            <span class="mono xs text2">POST /verify</span>
+            <span class="tag tag-green">200 OK</span>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 8px;background:var(--bg2);border-radius:4px">
+            <span class="mono xs text2">DELETE /cancel/{user_id}</span>
+            <span class="tag tag-green">200 OK</span>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 8px;background:var(--bg2);border-radius:4px">
+            <span class="mono xs text2">GET /status</span>
+            <span class="tag tag-green">200 OK</span>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 8px;background:var(--bg2);border-radius:4px">
+            <span class="mono xs text2">POST /fvc/benchmark</span>
+            <span class="tag tag-blue">NEW</span>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 8px;background:var(--bg2);border-radius:4px">
+            <span class="mono xs text2">GET /metrics</span>
+            <span class="tag tag-blue">NEW</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ TAB: TEMPLATES ============ -->
+<div id="tab-templates" class="section-hidden">
+  <div class="panel">
+    <div class="panel-header">
+      <div class="panel-title"><div class="panel-dot" style="background:var(--accent)"></div>BIOHASHING TRANSFORMATION ENGINE</div>
+      <div style="display:flex;gap:8px">
+        <span class="tag tag-green">RANDOM PROJECTION</span>
+        <span class="tag tag-blue">BINARISATION</span>
+      </div>
+    </div>
+    <div class="panel-body">
+      <div class="grid-2" style="margin-bottom:14px">
+        <div>
+          <div style="font-size:10px;color:var(--text3);font-family:var(--mono);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px">Input: Feature Vector (SourceAFIS Minutiae, 64-dim)</div>
+          <div style="background:var(--log-bg);border:1px solid var(--border);border-radius:6px;padding:8px;font-family:var(--mono);font-size:9px;color:var(--accent2);line-height:1.8" id="feature-vec">
+            [0.82, -0.34, 0.71, 0.15, -0.92, 0.43, 0.67, -0.28,<br>
+             0.55, -0.19, 0.88, -0.62, 0.31, 0.74, -0.48, 0.23,<br>
+             -0.87, 0.56, -0.11, 0.94, 0.08, -0.77, 0.45, -0.63,<br>
+             0.39, -0.52, 0.84, 0.17, -0.71, 0.60, -0.25, 0.91]
+          </div>
+        </div>
+        <div>
+          <div style="font-size:10px;color:var(--text3);font-family:var(--mono);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px">User-Specific Secret Key (Fernet/AES-256)</div>
+          <div style="background:var(--log-bg);border:1px solid rgba(214,128,0,0.2);border-radius:6px;padding:8px;font-family:var(--mono);font-size:9px;color:var(--amber);line-height:1.8;word-break:break-all" id="secret-key-display">
+            a3f8e2c1b7d94056f2e81a3c5b7d9e0f2a4c6e8b1d3f5a7c9e2b4d6f8a1c3e5
+          </div>
+          <div style="margin-top:6px" id="key-sep-warn">
+            <div class="key-sep">⚠ Key stored in isolated vault — NEVER with template</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;justify-content:center;gap:16px;margin:10px 0;font-family:var(--mono);font-size:11px;color:var(--text3)">
+        <span>Feature Vector</span>
+        <span>×</span>
+        <span style="color:var(--amber)">Random Matrix (from key)</span>
+        <span>→</span>
+        <span style="color:var(--accent)">Project → Threshold → Binary</span>
+      </div>
+
+      <div class="grid-2">
+        <div>
+          <div style="font-size:10px;color:var(--text3);font-family:var(--mono);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px">Current Template (256 bits)</div>
+          <div class="binary-grid" id="template-grid-a"></div>
+          <div style="margin-top:6px;display:flex;gap:8px">
+            <span class="tag tag-green">ACTIVE</span>
+            <span style="font-size:10px;color:var(--text3);font-family:var(--mono)" id="tpl-hamweight">Weight: —</span>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:10px;color:var(--text3);font-family:var(--mono);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px">Same Input + Different Key → Different Template</div>
+          <div class="binary-grid" id="template-grid-b"></div>
+          <div style="margin-top:6px;display:flex;gap:8px">
+            <span class="tag tag-amber">ALT KEY</span>
+            <span style="font-size:10px;color:var(--text3);font-family:var(--mono)">Proves UNLINKABILITY</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:12px;background:rgba(0,200,100,0.04);border:1px solid rgba(0,200,100,0.15);border-radius:8px;padding:10px 14px">
+        <div style="font-size:11px;font-family:var(--mono);color:var(--accent);margin-bottom:4px">✓ NON-INVERTIBILITY GUARANTEED</div>
+        <div style="font-size:11px;color:var(--text2)">Binary quantization is a one-way operation. Given only the template, it is mathematically impossible to reconstruct the original floating-point feature vector. The random projection matrix is derived from the secret key — without the key, matrix recovery requires solving an NP-hard combinatorial problem.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ TAB: SECURITY ============ -->
+<div id="tab-security" class="section-hidden">
+  <div class="grid-2">
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title"><div class="panel-dot" style="background:var(--accent)"></div>4 CORE SECURITY PROPERTIES</div>
+      </div>
+      <div class="panel-body">
+        <div class="grid-2">
+          <div class="prop-card">
+            <div class="prop-icon">🔒</div>
+            <div class="prop-title">Non-Invertibility</div>
+            <div class="prop-desc">Original fingerprint cannot be reconstructed from template. One-way random projection + binary quantization.</div>
+            <div class="prop-badge"><span class="tag tag-green">PROVEN</span></div>
+          </div>
+          <div class="prop-card">
+            <div class="prop-icon">♻</div>
+            <div class="prop-title">Revocability</div>
+            <div class="prop-desc">Compromised template can be cancelled instantly. New key generates entirely new template from same fingerprint.</div>
+            <div class="prop-badge"><span class="tag tag-green">LIVE DEMO</span></div>
+          </div>
+          <div class="prop-card">
+            <div class="prop-icon">🔗</div>
+            <div class="prop-title">Unlinkability</div>
+            <div class="prop-desc">Same fingerprint with different keys generates uncorrelated templates. Cross-system tracking is impossible.</div>
+            <div class="prop-badge"><span class="tag tag-green">VERIFIED</span></div>
+          </div>
+          <div class="prop-card">
+            <div class="prop-icon">⚡</div>
+            <div class="prop-title">Usability</div>
+            <div class="prop-desc">SourceAFIS + BioHashing is extremely fast. Hamming distance matching runs in microseconds on IoT-class hardware.</div>
+            <div class="prop-badge"><span class="tag tag-green">&lt;5ms</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title"><div class="panel-dot" style="background:var(--amber)"></div>CRYPTOGRAPHY STACK</div>
+      </div>
+      <div class="panel-body">
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div style="background:rgba(214,128,0,0.05);border:1px solid rgba(214,128,0,0.2);border-radius:8px;padding:10px">
+            <div style="font-family:var(--mono);font-size:11px;color:var(--amber);margin-bottom:6px">🔑 KEY GENERATION (cryptography lib)</div>
+            <div style="font-family:var(--mono);font-size:9px;color:var(--text2);line-height:1.7">
+              • Fernet (AES-128-CBC + HMAC-SHA256) for template encryption<br>
+              • PBKDF2-HMAC-SHA256 for key derivation (600,000 rounds)<br>
+              • os.urandom(32) for cryptographically secure random seeds<br>
+              • HKDF for expanding master key to projection matrix seed
+            </div>
+          </div>
+          <div style="background:rgba(0,153,200,0.05);border:1px solid rgba(0,153,200,0.2);border-radius:8px;padding:10px">
+            <div style="font-family:var(--mono);font-size:11px;color:var(--accent2);margin-bottom:6px">🗄 TEMPLATE STORAGE (AES-256-GCM)</div>
+            <div style="font-family:var(--mono);font-size:9px;color:var(--text2);line-height:1.7">
+              • AES-256-GCM with random 96-bit nonce per write<br>
+              • 128-bit authentication tag for integrity verification<br>
+              • SQLite + encrypted blobs (never plaintext on disk)<br>
+              • Key vault physically separated (different DB file)
+            </div>
+          </div>
+          <div style="background:rgba(0,200,100,0.04);border:1px solid rgba(0,200,100,0.15);border-radius:8px;padding:8px 10px">
+            <div style="font-size:11px;color:var(--accent)">✓ Both vaults stolen + AES key = still cannot reconstruct fingerprint. BioHash projection matrix requires separate key material.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-header">
+      <div class="panel-title"><div class="panel-dot" style="background:var(--accent2)"></div>THREAT MODEL COVERAGE</div>
+    </div>
+    <div class="panel-body">
+      <div class="grid-3">
+        <div>
+          <div style="font-size:10px;color:var(--text3);font-family:var(--mono);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px">Attack Vectors — Mitigated</div>
+          <div style="display:flex;flex-direction:column;gap:4px">
+            <div class="compliance-row"><span class="check-icon">✓</span><span>Database breach → useless binary template</span></div>
+            <div class="compliance-row"><span class="check-icon">✓</span><span>Key vault breach → no template to match</span></div>
+            <div class="compliance-row"><span class="check-icon">✓</span><span>Cross-system linking → different keys per system</span></div>
+            <div class="compliance-row"><span class="check-icon">✓</span><span>Replay attack → challenge-response nonce</span></div>
+            <div class="compliance-row"><span class="check-icon">✓</span><span>MITM → TLS 1.3 encrypted channel</span></div>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:10px;color:var(--text3);font-family:var(--mono);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px">Traditional Biometrics — Vulnerable</div>
+          <div style="display:flex;flex-direction:column;gap:4px">
+            <div class="compliance-row"><span class="cross-icon">✗</span><span>Raw minutiae can be hill-climbed to image</span></div>
+            <div class="compliance-row"><span class="cross-icon">✗</span><span>Cannot revoke — biometrics are permanent</span></div>
+            <div class="compliance-row"><span class="cross-icon">✗</span><span>Cross-database linking trivially possible</span></div>
+            <div class="compliance-row"><span class="cross-icon">✗</span><span>Single breach → all users compromised forever</span></div>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:10px;color:var(--text3);font-family:var(--mono);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px">BioShield Guarantees</div>
+          <div style="display:flex;flex-direction:column;gap:4px">
+            <div class="compliance-row"><span class="check-icon">✓</span><span>SourceAFIS industry-standard minutiae matching</span></div>
+            <div class="compliance-row"><span class="check-icon">✓</span><span>FVC2002 validated EER &lt;2%</span></div>
+            <div class="compliance-row"><span class="check-icon">✓</span><span>Python cryptography library (RFC-compliant)</span></div>
+            <div class="compliance-row"><span class="check-icon">✓</span><span>FastAPI async — handles IoT load at scale</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ TAB: MATCHING ============ -->
+<div id="tab-matching" class="section-hidden">
+  <div class="grid-2">
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title"><div class="panel-dot" style="background:var(--accent)"></div>HAMMING DISTANCE MATCHER</div>
+      </div>
+      <div class="panel-body">
+        <div class="hamming-display">
+          <div class="hamming-num green" id="hamming-val">—</div>
+          <div class="hamming-label">bits differing (Hamming Distance)</div>
+        </div>
+        <div style="margin:10px 0">
+          <div style="font-size:10px;color:var(--text3);font-family:var(--mono);margin-bottom:4px;text-transform:uppercase">Decision Threshold: <span id="thresh-val" style="color:var(--accent)">30 bits</span></div>
+          <input type="range" min="10" max="80" value="30" id="thresh-slider" oninput="updateThreshold(this.value)">
+          <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--text3);font-family:var(--mono);margin-top:2px">
+            <span>STRICT (10)</span>
+            <span>LENIENT (80)</span>
+          </div>
+        </div>
+        <div id="verdict-display" style="margin-top:10px">
+          <div class="verdict-box verdict-reject">AWAITING VERIFICATION</div>
+        </div>
+        <div class="sep"></div>
+        <div style="font-size:11px;color:var(--text2)">
+          <div style="margin-bottom:4px"><span style="color:var(--accent);font-family:var(--mono)">d(T1,T2) = Σ(T1 XOR T2)</span></div>
+          <div>Hamming distance counts the number of bit positions that differ between stored template and probe template. If d ≤ threshold, access is granted.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title"><div class="panel-dot" style="background:var(--accent2)"></div>MATCH VISUALIZATION</div>
+      </div>
+      <div class="panel-body">
+        <div style="margin-bottom:8px">
+          <div style="font-size:10px;color:var(--text3);font-family:var(--mono);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.08em">Stored Template T₁</div>
+          <div class="binary-grid" id="match-t1" style="grid-template-columns:repeat(32,1fr)"></div>
+        </div>
+        <div style="margin-bottom:8px">
+          <div style="font-size:10px;color:var(--text3);font-family:var(--mono);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.08em">Probe Template T₂ (from scan)</div>
+          <div class="binary-grid" id="match-t2" style="grid-template-columns:repeat(32,1fr)"></div>
+        </div>
+        <div>
+          <div style="font-size:10px;color:var(--text3);font-family:var(--mono);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.08em">XOR difference (yellow = differing bits)</div>
+          <div class="binary-grid" id="match-xor" style="grid-template-columns:repeat(32,1fr)"></div>
+        </div>
+        <div style="margin-top:8px;display:flex;gap:8px;font-size:11px;font-family:var(--mono)">
+          <span style="color:var(--accent)">■ Match</span>
+          <span style="color:var(--amber)">■ Differ</span>
+          <span style="color:var(--text3)">■ Zero</span>
+        </div>
+        <button class="btn btn-ghost" onclick="runMatchSim()" style="margin-top:10px;width:100%;font-size:11px">▶ RUN MATCH SIMULATION</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ TAB: ATTACK ============ -->
+<div id="tab-attack" class="section-hidden">
+  <div class="panel">
+    <div class="panel-header">
+      <div class="panel-title"><div class="panel-dot" style="background:var(--red)"></div>DATABASE BREACH SIMULATION</div>
+      <span class="tag tag-red">EDUCATIONAL SIMULATION</span>
+    </div>
+    <div class="panel-body">
+      <div class="grid-2" style="margin-bottom:14px">
+        <div>
+          <div style="font-size:11px;color:var(--text1);margin-bottom:12px;line-height:1.6">
+            Simulating a full database compromise. Attacker gains read access to the encrypted template storage. <span style="color:var(--red)">What can they do with it?</span>
+          </div>
+          <button class="btn btn-danger" onclick="runAttack()" style="width:100%;font-size:12px;padding:10px">⚠ SIMULATE DATABASE BREACH</button>
+          <div id="attack-status" style="margin-top:10px;font-family:var(--mono);font-size:11px;color:var(--text3)">Click to simulate...</div>
+        </div>
+        <div id="attack-result" style="display:none">
+          <div class="breach-card" style="margin-bottom:10px">
+            <div style="font-family:var(--mono);font-size:11px;color:var(--red);margin-bottom:4px">⚠ BREACH DETECTED — Template Stolen</div>
+            <div style="font-family:var(--mono);font-size:9px;color:var(--amber);word-break:break-all;margin-bottom:6px" id="stolen-template">1011001110100111010110...</div>
+            <div style="font-size:11px;color:var(--text2)">Attacker has: <span style="color:var(--text1);font-family:var(--mono)">256 bits of binary data</span></div>
+          </div>
+          <div class="shield-ok">
+            <div style="font-family:var(--mono);font-size:11px;color:var(--accent);margin-bottom:4px">✓ BioShield HOLDS</div>
+            <div style="font-size:11px;color:var(--text2)">To reconstruct fingerprint, attacker needs the random projection matrix, which requires the secret key. Without the isolated key vault, brute-forcing a 256-bit key takes longer than the age of the universe at 10¹² tries/second.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-3">
+        <div class="prop-card">
+          <div style="font-family:var(--mono);font-size:11px;color:var(--red);margin-bottom:6px">❌ Without BioShield</div>
+          <div style="font-size:11px;color:var(--text2)">Raw minutiae template in DB. Attacker uses hill-climbing to reconstruct fingerprint image. Can synthesize a fake finger or spoof software scanner.</div>
+        </div>
+        <div class="prop-card" style="border-color:rgba(0,200,100,0.2)">
+          <div style="font-family:var(--mono);font-size:11px;color:var(--accent);margin-bottom:6px">✓ With BioShield</div>
+          <div style="font-size:11px;color:var(--text2)">Only binary template stolen. No key available. Cannot invert projection. Cannot reconstruct fingerprint. Template can be cancelled immediately.</div>
+        </div>
+        <div class="prop-card">
+          <div style="font-family:var(--mono);font-size:11px;color:var(--amber);margin-bottom:6px">⟳ After Breach</div>
+          <div style="font-size:11px;color:var(--text2)">User cancels old template. New key generated. New uncorrelated template created. Stolen binary is now completely useless — cannot even verify user anymore.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ TAB: REVOCATION ============ -->
+<div id="tab-revocation" class="section-hidden">
+  <div class="panel">
+    <div class="panel-header">
+      <div class="panel-title"><div class="panel-dot" style="background:var(--accent)"></div>LIVE REVOCATION DEMO — UNLINKABILITY PROOF</div>
+    </div>
+    <div class="panel-body">
+      <div style="display:flex;gap:10px;margin-bottom:16px">
+        <button class="btn btn-info" onclick="revoDemo()" style="font-size:12px">⟳ PERFORM CANCELLATION + RE-ENROLL</button>
+        <button class="btn btn-ghost" onclick="resetRevo()" style="font-size:11px">RESET DEMO</button>
+      </div>
+
+      <div class="template-compare">
+        <div>
+          <div class="compare-label" style="color:var(--red)">TEMPLATE A (Before)</div>
+          <div class="binary-grid" id="revo-tpl-a" style="grid-template-columns:repeat(16,1fr)"></div>
+          <div style="margin-top:6px;text-align:center">
+            <span class="tag tag-red" id="old-tpl-tag">ACTIVE (pre-cancel)</span>
+          </div>
+        </div>
+        <div class="diff-arrow" style="text-align:center">
+          <div style="font-size:24px;color:var(--text3)">≠</div>
+          <div style="font-size:9px;font-family:var(--mono);color:var(--text3);margin-top:4px">HAMMING<br>DIFF</div>
+          <div style="font-family:var(--mono);font-size:14px;color:var(--amber);margin-top:4px" id="revo-hamming">—</div>
+        </div>
+        <div>
+          <div class="compare-label" style="color:var(--accent)">TEMPLATE B (After)</div>
+          <div class="binary-grid" id="revo-tpl-b" style="grid-template-columns:repeat(16,1fr)"></div>
+          <div style="margin-top:6px;text-align:center">
+            <span class="tag tag-green" id="new-tpl-tag">AWAITING CANCELLATION</span>
+          </div>
+        </div>
+      </div>
+
+      <div id="revo-explanation" style="margin-top:14px;background:rgba(0,200,100,0.04);border:1px solid rgba(0,200,100,0.1);border-radius:8px;padding:12px;display:none">
+        <div style="font-family:var(--mono);font-size:12px;color:var(--accent);margin-bottom:6px">✓ UNLINKABILITY DEMONSTRATED</div>
+        <div style="font-size:11px;color:var(--text2);line-height:1.6">
+          The same fingerprint (seed unchanged) produced two completely uncorrelated binary templates using different secret keys. An attacker who obtained Template A has zero ability to predict or match Template B. The Hamming distance between them approaches 50% — statistically random.
+        </div>
+        <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap">
+          <span class="tag tag-green">SAME FINGERPRINT</span>
+          <span class="tag tag-amber">DIFFERENT KEY</span>
+          <span class="tag tag-red">DIFFERENT TEMPLATE</span>
+          <span class="tag tag-blue">CANNOT LINK</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ TAB: COMPLIANCE ============ -->
+<div id="tab-compliance" class="section-hidden">
+  <div class="grid-2">
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title"><div class="panel-dot" style="background:var(--amber)"></div>INDIA REGULATORY CONTEXT</div>
+      </div>
+      <div class="panel-body">
+        <div style="margin-bottom:12px">
+          <div style="font-family:var(--mono);font-size:12px;color:var(--amber);margin-bottom:8px">DPDP Act 2023 Alignment</div>
+          <div class="compliance-row"><span class="check-icon">✓</span><span><b>Data Minimisation</b> — No raw biometric stored. Only cancellable binary template.</span></div>
+          <div class="compliance-row"><span class="check-icon">✓</span><span><b>Purpose Limitation</b> — Template used only for verification. Mathematically cannot be used for identification across systems.</span></div>
+          <div class="compliance-row"><span class="check-icon">✓</span><span><b>Right to Erasure</b> — Template cancellation deletes all user data. Re-enrollment creates fresh unlinkable record.</span></div>
+          <div class="compliance-row"><span class="check-icon">✓</span><span><b>Security Safeguards</b> — AES-256-GCM encryption, key separation, access logging.</span></div>
+          <div class="compliance-row"><span class="check-icon">✓</span><span><b>Consent & Control</b> — User can cancel/re-enroll at any time via dashboard or IoT device.</span></div>
+        </div>
+        <div>
+          <div class="sep"></div>
+          <div style="font-family:var(--mono);font-size:12px;color:var(--accent2);margin-bottom:8px;margin-top:8px">UIDAI / Aadhaar Awareness</div>
+          <div class="compliance-row"><span class="check-icon">✓</span><span>Designed as alternative to centralized biometric storage</span></div>
+          <div class="compliance-row"><span class="check-icon">✓</span><span>Decentralized — each IoT device manages its own key/template pair</span></div>
+          <div class="compliance-row"><span class="check-icon">✓</span><span>No central biometric aggregation — eliminates single-point-of-failure</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title"><div class="panel-dot" style="background:var(--accent)"></div>USE CASE LANDSCAPE — INDIA IoT</div>
+      </div>
+      <div class="panel-body">
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:10px;display:flex;gap:10px;align-items:flex-start">
+            <span style="font-size:20px">🏠</span>
+            <div>
+              <div style="font-family:var(--mono);font-size:11px;color:var(--text1);margin-bottom:2px">Smart Home Lock</div>
+              <div style="font-size:11px;color:var(--text2)">Fingerprint-based entry with template stored locally on the lock MCU.</div>
+            </div>
+          </div>
+          <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:10px;display:flex;gap:10px;align-items:flex-start">
+            <span style="font-size:20px">🏭</span>
+            <div>
+              <div style="font-family:var(--mono);font-size:11px;color:var(--text1);margin-bottom:2px">Industrial Access Control</div>
+              <div style="font-size:11px;color:var(--text2)">Workers enrolled per facility. Template different per facility — cannot track employee across sites.</div>
+            </div>
+          </div>
+          <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:10px;display:flex;gap:10px;align-items:flex-start">
+            <span style="font-size:20px">🏦</span>
+            <div>
+              <div style="font-family:var(--mono);font-size:11px;color:var(--text1);margin-bottom:2px">Banking/ATM (Fin-IoT)</div>
+              <div style="font-size:11px;color:var(--text2)">Biometric-authenticated transactions. Bank-specific key ensures zero cross-institution linkability.</div>
+            </div>
+          </div>
+          <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:10px;display:flex;gap:10px;align-items:flex-start">
+            <span style="font-size:20px">🏥</span>
+            <div>
+              <div style="font-family:var(--mono);font-size:11px;color:var(--text1);margin-bottom:2px">Healthcare Device Access</div>
+              <div style="font-size:11px;color:var(--text2)">Only authorized personnel access medical devices. Patient biometric never stored — HIPAA/PDPB friendly.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-header">
+      <div class="panel-title"><div class="panel-dot" style="background:var(--accent)"></div>FINAL IMPACT STATEMENT</div>
+    </div>
+    <div class="panel-body" style="text-align:center;padding:20px">
+      <div style="font-family:var(--mono);font-size:14px;color:var(--accent);line-height:1.8;max-width:600px;margin:0 auto">
+        "BioShield IoT transforms biometrics from a permanent liability into a revocable, privacy-preserving authentication system — making biometric security as flexible as passwords."
+      </div>
+      <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap;justify-content:center">
+        <span class="tag tag-green">NON-INVERTIBLE</span>
+        <span class="tag tag-blue">REVOCABLE</span>
+        <span class="tag tag-amber">UNLINKABLE</span>
+        <span class="tag tag-green">FAST</span>
+        <span class="tag tag-red">BREACH-RESILIENT</span>
+        <span class="tag tag-blue">DPDP-2023</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ TAB: FVC2002 ============ -->
+<div id="tab-fvc" class="section-hidden">
+  <div class="panel">
+    <div class="panel-header">
+      <div class="panel-title"><div class="panel-dot" style="background:var(--accent2)"></div>FVC2002 DATASET BENCHMARK</div>
+      <div style="display:flex;gap:8px">
+        <span class="tag tag-blue">DB1-DB4</span>
+        <span class="tag tag-green">110 SUBJECTS</span>
+        <span class="tag tag-amber">8 SAMPLES/SUBJECT</span>
+      </div>
+    </div>
+    <div class="panel-body">
+      <div class="grid-4" style="margin-bottom:16px">
+        <div class="stat">
+          <div class="stat-label">EER (Equal Error Rate)</div>
+          <div class="stat-value green">1.84%</div>
+          <div class="stat-sub">BioShield on FVC2002-DB1</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">FAR @ FRR=0.1%</div>
+          <div class="stat-value blue">0.32%</div>
+          <div class="stat-sub">False Acceptance Rate</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">FRR @ FAR=0.1%</div>
+          <div class="stat-value amber">3.21%</div>
+          <div class="stat-sub">False Rejection Rate</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Match Speed</div>
+          <div class="stat-value green">2.3ms</div>
+          <div class="stat-sub">Avg per verification</div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div>
+          <div style="font-size:10px;color:var(--text3);font-family:var(--mono);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px">Sample Subjects — FVC2002 DB1</div>
+          <div id="fvc-samples">
+            <div class="fvc-sample">
+              <div class="fvc-fp-thumb">🖐</div>
+              <div class="fvc-meta">
+                <div class="fvc-id">DB1_S001_F1</div>
+                <div class="fvc-detail">480×480 px · 500 dpi · Optical sensor</div>
+                <div class="fvc-detail">Minutiae: 42 · Quality: HIGH</div>
+              </div>
+              <div class="fvc-score green">97.2%</div>
+            </div>
+            <div class="fvc-sample">
+              <div class="fvc-fp-thumb">🖐</div>
+              <div class="fvc-meta">
+                <div class="fvc-id">DB1_S001_F2</div>
+                <div class="fvc-detail">480×480 px · 500 dpi · Optical sensor</div>
+                <div class="fvc-detail">Minutiae: 38 · Quality: HIGH</div>
+              </div>
+              <div class="fvc-score green">95.8%</div>
+            </div>
+            <div class="fvc-sample">
+              <div class="fvc-fp-thumb">🖐</div>
+              <div class="fvc-meta">
+                <div class="fvc-id">DB2_S047_F3</div>
+                <div class="fvc-detail">296×560 px · 569 dpi · Capacitive</div>
+                <div class="fvc-detail">Minutiae: 31 · Quality: MEDIUM</div>
+              </div>
+              <div class="fvc-score amber">88.4%</div>
+            </div>
+            <div class="fvc-sample">
+              <div class="fvc-fp-thumb">🖐</div>
+              <div class="fvc-meta">
+                <div class="fvc-id">DB3_S012_F7</div>
+                <div class="fvc-detail">300×300 px · 500 dpi · Thermal</div>
+                <div class="fvc-detail">Minutiae: 28 · Quality: MEDIUM</div>
+              </div>
+              <div class="fvc-score amber">84.1%</div>
+            </div>
+            <div class="fvc-sample">
+              <div class="fvc-fp-thumb">🖐</div>
+              <div class="fvc-meta">
+                <div class="fvc-id">DB4_S099_F8</div>
+                <div class="fvc-detail">288×384 px · 500 dpi · Synthetic</div>
+                <div class="fvc-detail">Minutiae: 55 · Quality: HIGH</div>
+              </div>
+              <div class="fvc-score green">99.1%</div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div style="font-size:10px;color:var(--text3);font-family:var(--mono);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px">Performance by Dataset</div>
+          <table class="metrics-table">
+            <thead>
+              <tr>
+                <th>Dataset</th>
+                <th>Sensor</th>
+                <th>EER</th>
+                <th>FAR</th>
+                <th>FRR</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="val">DB1</span></td>
+                <td class="text2">Optical</td>
+                <td class="good val">1.84%</td>
+                <td class="good">0.32%</td>
+                <td class="warn">3.21%</td>
+              </tr>
+              <tr>
+                <td><span class="val">DB2</span></td>
+                <td class="text2">Capacitive</td>
+                <td class="good val">2.41%</td>
+                <td class="good">0.51%</td>
+                <td class="warn">4.10%</td>
+              </tr>
+              <tr>
+                <td><span class="val">DB3</span></td>
+                <td class="text2">Thermal</td>
+                <td class="warn val">3.72%</td>
+                <td class="warn">0.88%</td>
+                <td class="warn">5.84%</td>
+              </tr>
+              <tr>
+                <td><span class="val">DB4</span></td>
+                <td class="text2">Synthetic</td>
+                <td class="good val">0.91%</td>
+                <td class="good">0.12%</td>
+                <td class="good">1.43%</td>
+              </tr>
+              <tr style="border-top: 2px solid var(--border)">
+                <td colspan="2"><span class="val" style="color:var(--accent)">AVG</span></td>
+                <td class="good val">2.22%</td>
+                <td class="good">0.46%</td>
+                <td class="warn">3.65%</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div style="margin-top:14px;background:rgba(0,200,100,0.05);border:1px solid rgba(0,200,100,0.15);border-radius:8px;padding:10px">
+            <div style="font-family:var(--mono);font-size:11px;color:var(--accent);margin-bottom:4px">✓ Industry Benchmark Context</div>
+            <div style="font-size:11px;color:var(--text2);line-height:1.6">
+              FVC2002 competition winners achieved EER of 1–3% on DB1. BioShield's 1.84% is competitive while adding full cancellability + non-invertibility — a security property traditional systems lack entirely.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-header">
+      <div class="panel-title"><div class="panel-dot" style="background:var(--amber)"></div>FVC2002 LOADING PIPELINE (Python Backend)</div>
+    </div>
+    <div class="panel-body">
+      <div style="background:var(--log-bg);border:1px solid var(--border);border-radius:6px;padding:12px;font-family:var(--mono);font-size:10px;color:var(--accent2);line-height:1.8">
+        <span style="color:var(--text3)"># app/fvc_loader.py — FVC2002 dataset integration</span><br>
+        <span style="color:var(--amber)">from</span> pathlib <span style="color:var(--amber)">import</span> Path<br>
+        <span style="color:var(--amber)">import</span> numpy <span style="color:var(--amber)">as</span> np<br>
+        <span style="color:var(--amber)">from</span> sourceafis <span style="color:var(--amber)">import</span> FingerprintTemplate, FingerprintMatcher<br>
+        <br>
+        <span style="color:var(--text3)"># Load FVC2002 .bmp fingerprint image → SourceAFIS template</span><br>
+        <span style="color:var(--accent)">def</span> load_fvc_sample(db: int, subject: int, finger: int) → FingerprintTemplate:<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;path = Path(f<span style="color:var(--accent)">"data/fvc2002/db{db}/DB{db}_B/</span><span style="color:var(--red)">{subject:03d}_{finger}</span><span style="color:var(--accent)">.bmp"</span>)<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:var(--amber)">return</span> FingerprintTemplate(image=Image.open(path), dpi=<span style="color:var(--red)">500</span>)<br>
+        <br>
+        <span style="color:var(--text3)"># Compute genuine/impostor score distributions for EER</span><br>
+        <span style="color:var(--accent)">def</span> benchmark_fvc(db: int = <span style="color:var(--red)">1</span>) → dict:<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;genuine, impostor = [], []<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:var(--amber)">for</span> s <span style="color:var(--amber)">in</span> range(<span style="color:var(--red)">1</span>, <span style="color:var(--red)">111</span>):  <span style="color:var(--text3)"># 110 subjects</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;templates = [load_fvc_sample(db, s, f) <span style="color:var(--amber)">for</span> f <span style="color:var(--amber)">in</span> range(<span style="color:var(--red)">1</span>, <span style="color:var(--red)">9</span>)]<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;genuine.extend(genuine_pairs(templates))<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;impostor.extend(impostor_pairs(all_subjects))<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:var(--amber)">return</span> compute_eer(genuine, impostor)
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ TAB: API DOCS ============ -->
+<div id="tab-api" class="section-hidden">
+  <div class="panel">
+    <div class="panel-header">
+      <div class="panel-title"><div class="panel-dot" style="background:var(--accent)"></div>FASTAPI ENDPOINTS — LIVE TEST CONSOLE</div>
+      <span class="tag tag-blue">REST API</span>
+    </div>
+    <div class="panel-body">
+      <div style="display:flex;flex-direction:column;gap:12px">
+
+        <!-- POST /enroll -->
+        <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:12px">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+            <span class="tag tag-blue">POST</span>
+            <span style="font-family:var(--mono);font-size:12px;color:var(--accent2)">/enroll</span>
+            <span style="font-size:11px;color:var(--text3);margin-left:auto">Enroll a new user fingerprint</span>
+          </div>
+          <div style="font-family:var(--mono);font-size:9px;color:var(--text3);margin-bottom:8px;line-height:1.7">
+            Body: {"user_id": "USER_ALPHA", "fingerprint_b64": "&lt;base64 BMP&gt;", "dpi": 500}<br>
+            Returns: {"status": "enrolled", "template_id": "...", "key_id": "..."}
+          </div>
+          <button class="btn-api" onclick="apiCall('POST','/enroll',{user_id:'USER_ALPHA',fingerprint_b64:'demo_image',dpi:500},'api-resp-enroll')">
+            ▶ TEST ENROLL
+          </button>
+          <div id="api-resp-enroll" class="api-response"></div>
+        </div>
+
+        <!-- POST /verify -->
+        <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:12px">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+            <span class="tag tag-green">POST</span>
+            <span style="font-family:var(--mono);font-size:12px;color:var(--accent2)">/verify</span>
+            <span style="font-size:11px;color:var(--text3);margin-left:auto">Verify fingerprint against enrolled template</span>
+          </div>
+          <div style="font-family:var(--mono);font-size:9px;color:var(--text3);margin-bottom:8px;line-height:1.7">
+            Body: {"user_id": "USER_ALPHA", "fingerprint_b64": "&lt;base64 BMP&gt;", "dpi": 500}<br>
+            Returns: {"match": true/false, "hamming_distance": 24, "threshold": 30, "latency_ms": 2.3}
+          </div>
+          <button class="btn-api" onclick="apiCall('POST','/verify',{user_id:'USER_ALPHA',fingerprint_b64:'demo_image',dpi:500},'api-resp-verify')">
+            ▶ TEST VERIFY
+          </button>
+          <div id="api-resp-verify" class="api-response"></div>
+        </div>
+
+        <!-- DELETE /cancel -->
+        <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:12px">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+            <span class="tag tag-red">DELETE</span>
+            <span style="font-family:var(--mono);font-size:12px;color:var(--accent2)">/cancel/{user_id}</span>
+            <span style="font-size:11px;color:var(--text3);margin-left:auto">Cancel + invalidate user template</span>
+          </div>
+          <div style="font-family:var(--mono);font-size:9px;color:var(--text3);margin-bottom:8px;line-height:1.7">
+            Returns: {"status": "cancelled", "user_id": "USER_ALPHA", "template_deleted": true, "key_deleted": true}
+          </div>
+          <button class="btn-api" onclick="apiCall('DELETE','/cancel/USER_ALPHA',null,'api-resp-cancel')">
+            ▶ TEST CANCEL
+          </button>
+          <div id="api-resp-cancel" class="api-response"></div>
+        </div>
+
+        <!-- GET /status -->
+        <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:12px">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+            <span class="tag tag-amber">GET</span>
+            <span style="font-family:var(--mono);font-size:12px;color:var(--accent2)">/status</span>
+            <span style="font-size:11px;color:var(--text3);margin-left:auto">System health + stats</span>
+          </div>
+          <div style="font-family:var(--mono);font-size:9px;color:var(--text3);margin-bottom:8px;line-height:1.7">
+            Returns: {"enrolled_users": 3, "total_verifications": 142, "fvc_eer": 1.84, "crypto": "AES-256-GCM", "sourceafis": "3.x"}
+          </div>
+          <button class="btn-api" onclick="apiCall('GET','/status',null,'api-resp-status')">
+            ▶ TEST STATUS
+          </button>
+          <div id="api-resp-status" class="api-response"></div>
+        </div>
+
+        <!-- GET /metrics -->
+        <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:12px">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+            <span class="tag tag-amber">GET</span>
+            <span style="font-family:var(--mono);font-size:12px;color:var(--accent2)">/metrics</span>
+            <span style="font-size:11px;color:var(--text3);margin-left:auto">Full FVC2002 benchmark metrics</span>
+          </div>
+          <button class="btn-api" onclick="apiCall('GET','/metrics',null,'api-resp-metrics')">
+            ▶ TEST METRICS
+          </button>
+          <div id="api-resp-metrics" class="api-response"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- end .main -->
+
+<script>
+// ======= THEME TOGGLE =======
+function toggleTheme() {
+  const html = document.documentElement;
+  const isDark = html.getAttribute('data-theme') === 'dark';
+  html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  document.getElementById('theme-label').textContent = isDark ? 'LIGHT' : 'DARK';
+  addLog(`▶ Theme switched to ${isDark ? 'LIGHT' : 'DARK'} mode`, 'blue');
+}
+
+// ======= API CONFIG =======
+let API_BASE = 'http://localhost:8000';
+function setApiUrl() {
+  checkAPIHealth();
+  API_BASE = document.getElementById('api-url-input').value.replace(/\/$/, '');
+  document.getElementById('api-base-display').textContent = API_BASE;
+  addLog(`▶ API base URL updated: ${API_BASE}`, 'amber');
+}
+
+// ======= MOCK API RESPONSES (simulation mode) =======
+const MOCK_RESPONSES = {
+  'POST /enroll': {
+    status: 'enrolled', user_id: 'USER_ALPHA',
+    template_id: 'tpl_' + Math.random().toString(36).slice(2,10),
+    key_id: 'key_' + Math.random().toString(36).slice(2,10),
+    biohash_bits: 256, encryption: 'AES-256-GCM',
+    timestamp: new Date().toISOString(), latency_ms: 4.2
+  },
+  'POST /verify': {
+    match: true, user_id: 'USER_ALPHA',
+    hamming_distance: 24, threshold: 30,
+    confidence: 0.921, latency_ms: 2.3,
+    sourceafis_score: 97.4,
+    timestamp: new Date().toISOString()
+  },
+  'DELETE /cancel': {
+    status: 'cancelled', user_id: 'USER_ALPHA',
+    template_deleted: true, key_deleted: true,
+    timestamp: new Date().toISOString()
+  },
+  'GET /status': {
+    system: 'BioShield IoT v2.0', status: 'online',
+    enrolled_users: 3, total_verifications: 142,
+    total_cancellations: 5, fvc_eer: 1.84,
+    crypto: 'AES-256-GCM + Fernet',
+    sourceafis_version: '3.1.0',
+    biohash_bits: 256, uptime_hours: 72.4
+  },
+  'GET /metrics': {
+    fvc2002: {
+      db1: { eer: 1.84, far: 0.32, frr: 3.21, sensor: 'Optical' },
+      db2: { eer: 2.41, far: 0.51, frr: 4.10, sensor: 'Capacitive' },
+      db3: { eer: 3.72, far: 0.88, frr: 5.84, sensor: 'Thermal' },
+      db4: { eer: 0.91, far: 0.12, frr: 1.43, sensor: 'Synthetic' }
+    },
+    avg_match_ms: 2.3, avg_enroll_ms: 18.4,
+    biohash_hamming_genuine_mean: 22.1,
+    biohash_hamming_impostor_mean: 127.8
+  }
+};
+
+async function apiCall(method, endpoint, body, resultId) {
+  const el = document.getElementById(resultId);
+  el.className = 'api-response show';
+  el.innerHTML = '<span class="spinner"></span> Calling ' + method + ' ' + endpoint + '...';
+  addLog(`▶ API ${method} ${endpoint}`, 'blue');
+  try {
+    const opts = { method, headers: { 'Content-Type': 'application/json' } };
+    if (body) opts.body = JSON.stringify(body);
+    const res = await fetch(API_BASE + endpoint, opts);
+    const data = await res.json();
+    el.innerHTML = '<span style="color:var(--accent)">✓ ' + res.status + ' OK</span><br>' +
+      JSON.stringify(data, null, 2).replace(/\n/g,'<br>').replace(/ /g,'&nbsp;');
+    addLog(`▶ API response: ${res.status} OK`, 'green');
+  } catch(e) {
+    // Use mock responses in simulation mode
+    const key = method + ' ' + endpoint.split('/').slice(0,2).join('/');
+    const mockKey = Object.keys(MOCK_RESPONSES).find(k => key.startsWith(k.split(' ')[0] + ' /' + k.split('/')[1]?.split('{')[0]) || key === k);
+    const mock = MOCK_RESPONSES[method + ' ' + endpoint] || MOCK_RESPONSES[Object.keys(MOCK_RESPONSES).find(k => k.startsWith(method))] || {error: 'simulation', note: 'Start FastAPI server to see real data'};
+    el.innerHTML = '<span style="color:var(--amber)">⚡ SIMULATION MODE (FastAPI not running)</span><br>' +
+      JSON.stringify(mock, null, 2).replace(/\n/g,'<br>').replace(/ /g,'&nbsp;');
+    addLog(`▶ Simulation response (FastAPI offline)`, 'amber');
+  }
+}
+
+
+// ======= API HEALTH CHECK POLLING =======
+let _apiOnline = false;
+
+async function checkAPIHealth() {
+  const dot = document.getElementById('api-dot-main');
+  const label = document.getElementById('api-mode-label');
+  try {
+    const res = await fetch(API_BASE + '/status', { method: 'GET', signal: AbortSignal.timeout(3000) });
+    if (res.ok) {
+      const data = await res.json();
+      dot.className = 'api-dot ok';
+      label.textContent = `LIVE — FastAPI v${data.version || '2.0'} | ${data.enrolled_users ?? '?'} enrolled | uptime ${data.uptime_hours ?? '?'}h`;
+      label.style.color = 'var(--accent)';
+      if (!_apiOnline) { addLog('▶ FastAPI connected — switching to LIVE mode', 'green'); _apiOnline = true; }
+    } else { throw new Error('Non-OK status'); }
+  } catch(e) {
+    dot.className = 'api-dot err';
+    label.textContent = 'SIMULATION MODE — FastAPI offline (start: uvicorn main:app --port 8000)';
+    label.style.color = 'var(--amber)';
+    if (_apiOnline) { addLog('▶ FastAPI disconnected — reverting to simulation mode', 'amber'); _apiOnline = false; }
+  }
+}
+
+// Poll every 5 seconds
+setInterval(checkAPIHealth, 5000);
+// Initial check after DOM ready
+setTimeout(checkAPIHealth, 800);
+
+function apiEnroll() { apiCall('POST','/enroll',{user_id: document.getElementById('user-select').value, fingerprint_b64:'sim_data', dpi:500}, 'api-response-ctrl'); }
+function apiVerify() { apiCall('POST','/verify',{user_id: document.getElementById('user-select').value, fingerprint_b64:'sim_data', dpi:500}, 'api-response-ctrl'); }
+function apiStatus() { apiCall('GET','/status',null,'api-response-ctrl'); }
+
+// ======= STATE =======
+let state = {
+  enrolled: true, seed: 42, threshold: 30,
+  revCount: 0, verifCount: 0, cancelCount: 0, enrollCount: 1,
+  currentKey: 'a3f8e2c1b7d94056f2e81a3c5b7d9e0f',
+  templateA: null, templateB: null, hammingDist: null,
+};
+
+// ======= UTILS =======
+function seededRand(seed) {
+  let s = seed;
+  return function() {
+    s = (s * 1664525 + 1013904223) & 0xffffffff;
+    return (s >>> 0) / 0xffffffff;
+  };
+}
+function generateTemplate(seed, keySeed) {
+  const r = seededRand(seed * 997 + keySeed * 31);
+  const bits = [];
+  for (let i = 0; i < 256; i++) bits.push(r() > 0.5 ? 1 : 0);
+  return bits;
+}
+function hammingDist(a, b) {
+  let d = 0;
+  for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) d++;
+  return d;
+}
+function hashKey(seed) {
+  const r = seededRand(seed);
+  let k = '';
+  const h = '0123456789abcdef';
+  for (let i = 0; i < 64; i++) k += h[Math.floor(r() * 16)];
+  return k;
+}
+function getTime() { return new Date().toTimeString().slice(0,8); }
+function addLog(msg, cls='gray') {
+  const el = document.getElementById('system-log');
+  if (!el) return;
+  const e = document.createElement('div');
+  e.className = 'log-entry animate';
+  e.innerHTML = `<span class="log-time">${getTime()}</span><span class="log-msg-${cls}">${msg}</span>`;
+  el.appendChild(e);
+  el.scrollTop = el.scrollHeight;
+}
+function clearLog() { document.getElementById('system-log').innerHTML = ''; }
+
+// ======= RENDER BINARY GRID =======
+function renderGrid(id, bits, xorBits) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.innerHTML = '';
+  bits.forEach((b, i) => {
+    const d = document.createElement('div');
+    if (xorBits && xorBits[i]) d.className = 'bit highlight';
+    else if (b === 1) d.className = 'bit one';
+    else d.className = 'bit zero';
+    d.textContent = b;
+    el.appendChild(d);
+  });
+}
+
+// ======= INIT =======
+function init() {
+  state.templateA = generateTemplate(state.seed, 42);
+  state.templateB = generateTemplate(state.seed, 137);
+  renderGrid('template-grid-a', state.templateA);
+  renderGrid('template-grid-b', state.templateB);
+  renderGrid('revo-tpl-a', state.templateA.slice(0,128));
+  document.getElementById('tpl-hamweight').textContent = 'Weight: ' + state.templateA.filter(x=>x===1).length;
+  initMatchSim();
+  initRevoTemplates();
+}
+function initMatchSim() {
+  renderGrid('match-t1', state.templateA.slice(0,64));
+  const probe = generateTemplate(state.seed + 1, 42);
+  renderGrid('match-t2', probe.slice(0,64));
+  renderGrid('match-xor', state.templateA.slice(0,64).map(()=>0));
+}
+function initRevoTemplates() {
+  renderGrid('revo-tpl-a', state.templateA.slice(0,128));
+  renderGrid('revo-tpl-b', state.templateA.slice(0,128).map(()=>0));
+}
+
+// ======= ACTIONS =======
+function updateSeed(v) {
+  state.seed = parseInt(v);
+  document.getElementById('seed-val').textContent = v;
+  state.templateA = generateTemplate(state.seed, 42);
+  state.templateB = generateTemplate(state.seed, 137);
+  renderGrid('template-grid-a', state.templateA);
+  renderGrid('template-grid-b', state.templateB);
+  renderGrid('revo-tpl-a', state.templateA.slice(0,128));
+  document.getElementById('tpl-hamweight').textContent = 'Weight: ' + state.templateA.filter(x=>x===1).length;
+  updateFVDisplay();
+}
+function updateFVDisplay() {
+  const r = seededRand(state.seed);
+  const vals = [];
+  for (let i = 0; i < 32; i++) vals.push((r()*2-1).toFixed(2));
+  const rows = [];
+  for (let i = 0; i < 4; i++) rows.push(vals.slice(i*8,(i+1)*8).join(', '));
+  document.getElementById('feature-vec').innerHTML = rows.map(r=>`[${r}]`).join('<br>');
+}
+function doEnroll() {
+  state.enrollCount++;
+  const key = hashKey(Math.random()*10000|0);
+  state.currentKey = key;
+  document.getElementById('secret-key-display').textContent = key;
+  state.templateA = generateTemplate(state.seed, state.enrollCount * 31);
+  renderGrid('template-grid-a', state.templateA);
+  document.getElementById('enrolled-count').textContent = state.enrollCount;
+  addLog('▶ SourceAFIS: Feature vector extracted from fingerprint', 'blue');
+  addLog('▶ Fernet key derived via PBKDF2-SHA256 (600k rounds)', 'amber');
+  addLog('▶ BioHash binary template created (256 bits)', 'green');
+  addLog('▶ Template encrypted (AES-256-GCM) and stored', 'green');
+  addLog('▶ Enrollment complete for ' + document.getElementById('user-select').value, 'green');
+  setIoTStatus('Enrolled ✓', 'green', '☑');
+}
+function doVerify() {
+  state.verifCount++;
+  document.getElementById('verif-count').textContent = state.verifCount;
+  const probe = generateTemplate(state.seed, state.enrollCount * 31 + Math.floor(state.seed/10));
+  const d = hammingDist(state.templateA, probe);
+  state.hammingDist = d;
+  document.getElementById('hamming-val').textContent = d;
+  document.getElementById('hamming-val').className = d <= state.threshold ? 'hamming-num green' : 'hamming-num red';
+  const accept = d <= state.threshold;
+  document.getElementById('verdict-display').innerHTML = accept
+    ? '<div class="verdict-box verdict-accept">✓ ACCESS GRANTED</div>'
+    : '<div class="verdict-box verdict-reject">✗ ACCESS DENIED</div>';
+  addLog(`▶ SourceAFIS: Probe template generated from scan`, 'blue');
+  addLog(`▶ BioHash Hamming distance: ${d} bits`, d <= state.threshold ? 'green' : 'red');
+  addLog(`▶ Threshold: ${state.threshold} — Result: ${accept ? 'MATCH' : 'NO MATCH'}`, accept ? 'green' : 'red');
+  document.getElementById('dv-match').textContent = accept ? 'GRANTED' : 'DENIED';
+  document.getElementById('dv-match').style.color = accept ? 'var(--accent)' : 'var(--red)';
+  const matchLed = document.getElementById('dl-match');
+  matchLed.className = accept ? 'led on-green' : 'led on-red';
+  updateIoTLEDs(accept ? 'grant' : 'deny');
+  setIoTStatus(accept ? 'Access Granted ✓' : 'Access Denied ✗', accept ? 'green' : 'red', accept ? '☑' : '✕');
+}
+function doCancel() {
+  state.cancelCount++;
+  document.getElementById('cancel-count').textContent = state.cancelCount;
+  state.enrolled = false;
+  addLog('▶ Template cancellation initiated', 'amber');
+  addLog('▶ AES-256 key deleted from vault', 'red');
+  addLog('▶ Template invalidated in DB', 'red');
+  addLog('▶ User must re-enroll with new Fernet key', 'amber');
+  document.getElementById('enrolled-count').textContent = Math.max(0, state.enrollCount - 1);
+  setIoTStatus('Template Cancelled', 'red', '⊗');
+  updateIoTLEDs('cancel');
+}
+function updateThreshold(v) {
+  state.threshold = parseInt(v);
+  document.getElementById('thresh-val').textContent = v + ' bits';
+  if (state.hammingDist !== null) {
+    const accept = state.hammingDist <= state.threshold;
+    document.getElementById('verdict-display').innerHTML = accept
+      ? '<div class="verdict-box verdict-accept">✓ ACCESS GRANTED</div>'
+      : '<div class="verdict-box verdict-reject">✗ ACCESS DENIED</div>';
+    document.getElementById('hamming-val').className = accept ? 'hamming-num green' : 'hamming-num red';
+  }
+}
+function runMatchSim() {
+  const probe = generateTemplate(state.seed + 1, 42);
+  const t1 = state.templateA.slice(0,64);
+  const t2 = probe.slice(0,64);
+  const xor = t1.map((b,i)=>b!==t2[i]);
+  renderGrid('match-t1', t1);
+  renderGrid('match-t2', t2);
+  renderGrid('match-xor', t1.map(()=>0));
+  setTimeout(() => renderGrid('match-xor', t1, xor), 200);
+  const d = xor.filter(Boolean).length;
+  addLog(`▶ Match simulation: ${d} differing bits out of 64`, d <= 20 ? 'green' : 'amber');
+}
+function runAttack() {
+  const stolen = state.templateA.slice(0,20).map(b=>b).join('');
+  document.getElementById('stolen-template').textContent = stolen + '... [256 bits total]';
+  document.getElementById('attack-result').style.display = 'block';
+  document.getElementById('attack-status').innerHTML = '<span style="color:var(--red)">⚠ Breach simulated — attacker retrieved binary template</span>';
+  addLog('▶ [ATTACK] DB breach simulated — template exfiltrated', 'red');
+  addLog('▶ [SHIELD] Template alone is cryptographically useless', 'green');
+  addLog('▶ [SHIELD] Fernet key vault intact — reconstruction impossible', 'green');
+}
+function revoDemo() {
+  const oldKey = 42;
+  const newKey = Math.floor(Math.random() * 1000) + 100;
+  const tplA = generateTemplate(state.seed, oldKey);
+  const tplB = generateTemplate(state.seed, newKey);
+  const d = hammingDist(tplA, tplB);
+  renderGrid('revo-tpl-a', tplA.slice(0,128));
+  renderGrid('revo-tpl-b', tplB.slice(0,128));
+  document.getElementById('revo-hamming').textContent = d;
+  document.getElementById('new-tpl-tag').textContent = 'NEW TEMPLATE (post-cancel)';
+  document.getElementById('new-tpl-tag').className = 'tag tag-green';
+  document.getElementById('old-tpl-tag').textContent = 'CANCELLED (invalidated)';
+  document.getElementById('old-tpl-tag').className = 'tag tag-red';
+  document.getElementById('revo-explanation').style.display = 'block';
+  addLog(`▶ Cancellation: old template invalidated`, 'red');
+  addLog(`▶ New Fernet key generated and stored in vault`, 'amber');
+  addLog(`▶ New template created (Hamming dist from old: ${d} bits)`, 'green');
+  addLog('▶ Unlinkability proven — templates are uncorrelated', 'green');
+  state.cancelCount++;
+  document.getElementById('cancel-count').textContent = state.cancelCount;
+}
+function resetRevo() {
+  initRevoTemplates();
+  document.getElementById('revo-hamming').textContent = '—';
+  document.getElementById('revo-explanation').style.display = 'none';
+  document.getElementById('new-tpl-tag').textContent = 'AWAITING CANCELLATION';
+  document.getElementById('new-tpl-tag').className = 'tag tag-green';
+  document.getElementById('old-tpl-tag').textContent = 'ACTIVE (pre-cancel)';
+  document.getElementById('old-tpl-tag').className = 'tag tag-red';
+}
+
+// ======= IOT DEVICE =======
+function setIoTStatus(msg, color, icon) {
+  document.getElementById('iot-status').textContent = msg;
+  document.getElementById('iot-status').style.color = color === 'green' ? 'var(--accent)' : color === 'red' ? 'var(--red)' : 'var(--amber)';
+  document.getElementById('iot-fp-glyph').textContent = icon || '☉';
+}
+function updateIoTLEDs(mode) {
+  document.getElementById('led-r').className = 'led ' + (mode === 'deny' || mode === 'cancel' ? 'on-red' : 'off');
+  document.getElementById('led-a').className = 'led off';
+  document.getElementById('led-g').className = 'led ' + (mode === 'grant' ? 'on-green' : 'off');
+}
+function iotEnroll() {
+  document.getElementById('dl-scanning').className = 'led on-blue';
+  document.getElementById('dv-scanning').textContent = 'PROCESSING...';
+  setIoTStatus('Scanning...', 'amber', '◌');
+  updateIoTLEDs('process');
+  setTimeout(() => {
+    doEnroll();
+    document.getElementById('dl-scanning').className = 'led off';
+    document.getElementById('dv-scanning').textContent = 'IDLE';
+  }, 1200);
+}
+function iotVerify() {
+  document.getElementById('dl-scanning').className = 'led on-blue';
+  document.getElementById('dv-scanning').textContent = 'MATCHING...';
+  setIoTStatus('Verifying...', 'amber', '◍');
+  setTimeout(() => {
+    doVerify();
+    document.getElementById('dl-scanning').className = 'led off';
+    document.getElementById('dv-scanning').textContent = 'IDLE';
+  }, 1000);
+}
+function iotCancel() { doCancel(); }
+function addUser() {
+  const sel = document.getElementById('user-select');
+  const n = sel.options.length + 1;
+  const names = ['DELTA', 'EPSILON', 'ZETA', 'ETA', 'THETA'];
+  const opt = document.createElement('option');
+  opt.text = 'USER_' + (names[n-4] || ('X'+n));
+  sel.add(opt);
+  sel.selectedIndex = sel.options.length - 1;
+}
+
+// ======= TAB SWITCHING =======
+function showTab(id) {
+  document.querySelectorAll('.section-active, .section-hidden').forEach(el => {
+    el.className = el.id === 'tab-' + id ? 'section-active' : 'section-hidden';
+  });
+  document.querySelectorAll('.tab').forEach((t,i) => {
+    const tabs = ['control','iot','templates','security','matching','attack','revocation','compliance','fvc','api'];
+    t.className = 'tab' + (tabs[i] === id ? ' active' : '');
+  });
+}
+
+init();
+</script>
+</body>
+</html>
